@@ -51,7 +51,7 @@ endfunction
 function! s:append_to_file(file, lines)
     let l:lines = []
 
-    " Place existing tasks in done.txt at the beggining of the list.
+    " Place existing tasks in archive.txt at the beggining of the list.
     if filereadable(a:file)
         call extend(l:lines, readfile(a:file))
     endif
@@ -64,13 +64,13 @@ function! s:append_to_file(file, lines)
 endfunction
 
 function! todo#txt#remove_completed()
-    " Check if we can write to done.txt before proceeding.
+    " Check if we can write to archive.txt before proceeding.
 
     let l:target_dir = expand('%:p:h')
     let l:todo_file = expand('%:p')
-    let l:done_file = substitute(substitute(l:todo_file, 'todo.txt$', 'done.txt', ''), 'Todo.txt$', 'Done.txt', '')
+    let l:done_file = substitute(substitute(l:todo_file, 'todo.txt$', 'archive.txt', ''), 'Todo.txt$', 'Done.txt', '')
     if !filewritable(l:done_file) && !filewritable(l:target_dir)
-        echoerr "Can't write to file 'done.txt'"
+        echoerr "Can't write to file 'archive.txt'"
         return
     endif
 
@@ -117,6 +117,20 @@ endfunction
 
 function! todo#txt#prioritize_add_action(priority)
     execute 's/^\(([a-zA-Z]) \)\?/(' . a:priority . ') /'
+endfunction
+
+function! todo#txt#open_note()
+    " Save the current position
+    let l:curPos = getcurpos()
+    execute "normal! ^"
+    let l:searchResult = search("\\(\\s\\+\\)\\@<=note:[A-Za-z0-9_~\\/]\\+", "", line("."))
+    if l:searchResult ># 0
+        " open note
+        execute "normal! f:gf"
+    else
+        echo "No note to open"
+        call cursor(l:curPos[1], l:curPos[2])
+    endif
 endfunction
 
 " Modeline {{{1

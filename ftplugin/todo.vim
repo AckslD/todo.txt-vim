@@ -56,6 +56,9 @@ nnoremap <script> <silent> <buffer> <localleader>X :call todo#txt#mark_all_as_do
 " Remove completed {{{2
 nnoremap <script> <silent> <buffer> <localleader>D :call todo#txt#remove_completed()<CR>
 
+" Go to note
+nnoremap <script> <silent> <buffer> <localleader>o :call todo#txt#open_note()<CR>
+
 " Folding {{{1
 " Options {{{2
 setlocal foldmethod=expr
