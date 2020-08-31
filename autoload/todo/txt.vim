@@ -119,19 +119,5 @@ function! todo#txt#prioritize_add_action(priority)
     execute 's/^\(([a-zA-Z]) \)\?/(' . a:priority . ') /'
 endfunction
 
-function! todo#txt#open_note()
-    " Save the current position
-    let l:curPos = getcurpos()
-    execute "normal! ^"
-    let l:searchResult = search("\\(\\s\\+\\)\\@<=note:[A-Za-z0-9_~\\/]\\+", "", line("."))
-    if l:searchResult ># 0
-        " open note
-        execute "normal! f:gf"
-    else
-        echo "No note to open"
-        call cursor(l:curPos[1], l:curPos[2])
-    endif
-endfunction
-
 " Modeline {{{1
 " vim: ts=8 sw=4 sts=4 et foldenable foldmethod=marker foldcolumn=1

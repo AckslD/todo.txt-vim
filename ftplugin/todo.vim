@@ -16,6 +16,21 @@ set cpo&vim
 setlocal textwidth=0
 setlocal wrapmargin=0
 
+function! s:TestOpenTodo()
+    " call system("echo \"This is a todo\" >> ~/todo/todo.txt")
+    " edit
+endfunction
+
+call <SID>TestOpenTodo()
+
+
+" Test
+" echom "Test"
+" au TabEnter * echom "TestTab"
+" au BufReadPre * system("echo \"This is before opening a todo\" >> ~/tmp.log")
+" au BufReadPost * system("echo \"This is after opening a todo\" >> ~/tmp.log")
+" au FileType todo echom "This is a todo"
+
 " Mappings {{{1
 " Sort tasks {{{2
 nnoremap <script> <silent> <buffer> <localleader>s :%sort<CR>
