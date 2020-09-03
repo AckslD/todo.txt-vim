@@ -17,6 +17,6 @@ function! todo#files#open(key, defaultPath, defaultExt)
         write
         " Create the folders if they don't exists
     endif
-    execute "edit" l:filename
+    execute "vsplit" l:filename
     call system("mkdir -p " . expand("%:h"))
 endfunction

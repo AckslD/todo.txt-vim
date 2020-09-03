@@ -72,7 +72,13 @@ nnoremap <script> <silent> <buffer> <localleader>X :call todo#txt#mark_all_as_do
 nnoremap <script> <silent> <buffer> <localleader>D :call todo#txt#remove_completed()<CR>
 
 " Go to note
-nnoremap <script> <silent> <buffer> <localleader>o :call todo#txt#open_note()<CR>
+nnoremap <script> <silent> <buffer> <localleader>n :call todo#notes#open()<CR>
+
+" Go to note
+nnoremap <script> <silent> <buffer> <localleader>t :call todo#subtasks#open()<CR>
+
+" Key values
+nnoremap <script> <silent> <buffer> <localleader>vd :call todo#todokeys#pop("")<CR>
 
 " Folding {{{1
 " Options {{{2
