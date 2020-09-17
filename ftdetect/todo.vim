@@ -12,4 +12,4 @@ autocmd BufNewFile,BufRead *.[Dd]one.txt set filetype=todo
 autocmd BufNewFile,BufRead [Aa]rchive.txt set filetype=todo
 autocmd BufNewFile,BufRead *.[Aa]rchive.txt set filetype=todo
 " Subtasks
-autocmd BufNewFile,BufRead ~/.todo/subtasks/**/*.txt set filetype=todo
+autocmd BufNewFile,BufRead */.todo/subtasks/**/*.txt set filetype=todo

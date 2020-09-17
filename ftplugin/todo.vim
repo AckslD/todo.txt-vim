@@ -16,20 +16,10 @@ set cpo&vim
 setlocal textwidth=0
 setlocal wrapmargin=0
 
-function! s:TestOpenTodo()
-    " call system("echo \"This is a todo\" >> ~/todo/todo.txt")
-    " edit
-endfunction
-
-call <SID>TestOpenTodo()
-
-
-" Test
-" echom "Test"
-" au TabEnter * echom "TestTab"
-" au BufReadPre * system("echo \"This is before opening a todo\" >> ~/tmp.log")
-" au BufReadPost * system("echo \"This is after opening a todo\" >> ~/tmp.log")
-" au FileType todo echom "This is a todo"
+" Settings {{{1
+if ! exists("g:todo_root_folder")
+    let g:todo_root_folder = "~/.todo"
+endif
 
 " Mappings {{{1
 " Sort tasks {{{2
@@ -74,11 +64,18 @@ nnoremap <script> <silent> <buffer> <localleader>D :call todo#txt#remove_complet
 " Go to note
 nnoremap <script> <silent> <buffer> <localleader>n :call todo#notes#open()<CR>
 
-" Go to note
+" Go to subtasks
 nnoremap <script> <silent> <buffer> <localleader>t :call todo#subtasks#open()<CR>
+
+" Open link
+nnoremap <script> <silent> <buffer> <localleader>l :call todo#links#open()<CR>
 
 " Key values
 nnoremap <script> <silent> <buffer> <localleader>vd :call todo#todokeys#pop("")<CR>
+
+" Tasks
+nnoremap <script> <silent> <buffer> <localleader>o :call todo#tasks#insert_new_below()<CR>
+nnoremap <script> <silent> <buffer> <localleader>O :call todo#tasks#insert_new_above()<CR>
 
 " Folding {{{1
 " Options {{{2
