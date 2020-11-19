@@ -4,13 +4,19 @@ let s:current_due_date = ""
 let b:curdir = expand('<sfile>:p:h')
 let s:script_dir = b:curdir . "/../../syntax/python/"
 
+function! todo#folding#escape_prefix(str, prefix)
+    " Negative lookbehind to check if already escaped
+    let l:neg_lookbehind = "\\(\\\\\\)\\@<!"
+    return substitute(a:str, l:neg_lookbehind . a:prefix, "\\\\" . a:prefix, "g")
+endfunction
+
 function! todo#folding#set_focus_context(context)
-    let s:current_context = a:context
+    let s:current_context = todo#folding#escape_prefix(a:context, "@")
     execute "normal! zxzM"
 endfunction
 
 function! todo#folding#set_focus_project(project)
-    let s:current_project = a:project
+    let s:current_project = todo#folding#escape_prefix(a:project, "+")
     execute "normal! zxzM"
 endfunction
 
@@ -26,9 +32,37 @@ function! todo#folding#toggle_focus_due_date()
         return
     endif
     " TODO Add check for load python etc
+    " TODO python needed? Can also just compare with the date?
     python3 sys.argv = ["--focus"]
     execute "py3file " . s:script_dir. "todo.py"
     execute "normal! zxzM"
+endfunction
+
+function! todo#folding#focus_query_tag()
+    let l:querylst = ["Pick contex/project to focus on:"]
+    let l:index = 1
+    let l:contexts = todo#tags#get_all_tags("context")
+    let l:projects = todo#tags#get_all_tags("project")
+    for context in l:contexts
+        call add(l:querylst, l:index . ". " . context)
+        let l:index += 1
+    endfor
+    for project in l:projects
+        call add(l:querylst, l:index . ". " . project)
+        let l:index += 1
+    endfor
+    let l:answer = inputlist(l:querylst)
+    if l:answer <=# 0
+        echo "\nNo choice"
+        return -1
+    endif
+    if l:answer < len(l:contexts)
+        let l:tag = l:contexts[l:answer-1]
+        call todo#folding#set_focus_context(l:tag)
+    else
+        let l:tag = l:projects[l:answer-len(l:contexts)-1]
+        call todo#folding#set_focus_project(l:tag)
+    endif
 endfunction
 
 function! todo#folding#get_focus_regex()
@@ -38,9 +72,9 @@ endfunction
 " Get the folding level of a line based on the current focused project and
 " context
 function! todo#folding#foldlevel(lnum)
+    " TODO instead of building one big regex, we could also make use of
+    " if-statements here?
     return 0 - match(getline(a:lnum),todo#folding#get_focus_regex())
-    " /\v^[^xX](.*)@=(.*Make)@=(.*from)@=.* 
-    " /\v^[^xX](.*)@=(.*@work)@=.*$
 endfunction
 
 " Toggle focus to current project under line
@@ -84,7 +118,7 @@ function! todo#folding#toggle_focus_tag(tag_type)
         endfor
         let l:answer = inputlist(l:querylst)
         if l:answer <=# 0
-            echo "No choice"
+            echo "\nNo choice"
             return -1
         endif
         if l:answer == 1

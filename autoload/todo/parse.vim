@@ -11,6 +11,13 @@ endfunction
 "   regex="\\s@\\zs\\S\\+\\ze\\(\\s\\|\\n\\)"
 "   motion="e"
 function! todo#parse#get_elements(regex, motion)
+    " Check if line is folded
+    if foldclosed(line('.')) == -1
+        let l:folded = 0
+    else
+        let l:folded = 1
+        execute "normal! zA"
+    endif
     " Save the current position
     let l:curPos = getcurpos()
     " Save the a and b registers
@@ -31,6 +38,10 @@ function! todo#parse#get_elements(regex, motion)
     " Set the a and b registers back
     call setpos("'a", l:aPos)
     call setpos("'b", l:bPos)
+    " Close fold again if it was before
+    if l:folded
+        execute "normal! zA"
+    endif
 
     return l:elements
 endfunction

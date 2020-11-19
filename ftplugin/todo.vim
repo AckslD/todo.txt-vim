@@ -81,6 +81,7 @@ nnoremap <script> <silent> <buffer> <localleader>O :call todo#tasks#insert_new_a
 nnoremap <script> <silent> <buffer> <localleader>zp :call todo#folding#toggle_focus_project()<CR>
 nnoremap <script> <silent> <buffer> <localleader>zc :call todo#folding#toggle_focus_context()<CR>
 nnoremap <script> <silent> <buffer> <localleader>zd :call todo#folding#toggle_focus_due_date()<CR>
+nnoremap <script> <silent> <buffer> <localleader>zt :call todo#folding#focus_query_tag()<CR>
 
 " Folding {{{1
 " Options {{{2
