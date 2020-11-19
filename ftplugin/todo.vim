@@ -61,40 +61,34 @@ nnoremap <script> <silent> <buffer> <localleader>X :call todo#txt#mark_all_as_do
 " Remove completed {{{2
 nnoremap <script> <silent> <buffer> <localleader>D :call todo#txt#remove_completed()<CR>
 
-" Go to note
+" Go to note {{{2
 nnoremap <script> <silent> <buffer> <localleader>n :call todo#notes#open()<CR>
 
-" Go to subtasks
+" Go to subtasks {{{2
 nnoremap <script> <silent> <buffer> <localleader>t :call todo#subtasks#open()<CR>
 
-" Open link
+" Open link {{{2
 nnoremap <script> <silent> <buffer> <localleader>l :call todo#links#open()<CR>
 
-" Key values
+" Key values {{{2
 nnoremap <script> <silent> <buffer> <localleader>vd :call todo#todokeys#pop("")<CR>
 
-" Tasks
+" Tasks {{{2
 nnoremap <script> <silent> <buffer> <localleader>o :call todo#tasks#insert_new_below()<CR>
 nnoremap <script> <silent> <buffer> <localleader>O :call todo#tasks#insert_new_above()<CR>
+
+" Folding {{{2
+nnoremap <script> <silent> <buffer> <localleader>zp :call todo#folding#toggle_focus_project()<CR>
+nnoremap <script> <silent> <buffer> <localleader>zc :call todo#folding#toggle_focus_context()<CR>
+nnoremap <script> <silent> <buffer> <localleader>zd :call todo#folding#toggle_focus_due_date()<CR>
+nnoremap <script> <silent> <buffer> <localleader>zt :call todo#folding#focus_query_tag()<CR>
 
 " Folding {{{1
 " Options {{{2
 setlocal foldmethod=expr
-setlocal foldexpr=s:todo_fold_level(v:lnum)
+setlocal foldexpr=todo#folding#foldlevel(v:lnum)
 setlocal foldtext=s:todo_fold_text()
-
-" s:todo_fold_level(lnum) {{{2
-function! s:todo_fold_level(lnum)
-    " The match function returns the index of the matching pattern or -1 if
-    " the pattern doesn't match. In this case, we always try to match a
-    " completed task from the beginning of the line so that the matching
-    " function will always return -1 if the pattern doesn't match or 0 if the
-    " pattern matches. Incrementing by one the value returned by the matching
-    " function we will return 1 for the completed tasks (they will be at the
-    " first folding level) while for the other lines 0 will be returned,
-    " indicating that they do not fold.
-    return match(getline(a:lnum),'^[xX]\s.\+$') + 1
-endfunction
+setlocal fml=0
 
 " s:todo_fold_text() {{{2
 function! s:todo_fold_text()
