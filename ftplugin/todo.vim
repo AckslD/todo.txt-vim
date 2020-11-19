@@ -74,8 +74,12 @@ nnoremap <script> <silent> <buffer> <localleader>l :call todo#links#open()<CR>
 nnoremap <script> <silent> <buffer> <localleader>vd :call todo#todokeys#pop("")<CR>
 
 " Tasks {{{2
-nnoremap <script> <silent> <buffer> <localleader>o :call todo#tasks#insert_new_below()<CR>
-nnoremap <script> <silent> <buffer> <localleader>O :call todo#tasks#insert_new_above()<CR>
+nnoremap <script> <silent> <buffer> <localleader>o :call todo#tasks#insert_new("n", 0, 0)<CR>
+nnoremap <script> <silent> <buffer> <localleader>O :call todo#tasks#insert_new("n", 1, 0)<CR>
+nnoremap <script> <silent> <buffer> <localleader>p :call todo#tasks#insert_new("n", 0, 1)<CR>
+nnoremap <script> <silent> <buffer> <localleader>P :call todo#tasks#insert_new("n", 1, 1)<CR>
+inoremap <script> <silent> <buffer> <m-o> <esc>:call todo#tasks#insert_new("i", 0, 0)<CR>
+inoremap <script> <silent> <buffer> <m-p> <esc>:call todo#tasks#insert_new("i", 0, 1)<CR>
 
 " Folding {{{2
 nnoremap <script> <silent> <buffer> <localleader>zp :call todo#folding#toggle_focus_project()<CR>
