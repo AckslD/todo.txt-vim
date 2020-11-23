@@ -59,12 +59,10 @@ if exists('g:todo_load_python') && g:todo_load_python
     if has('python')
         let b:curdir = expand('<sfile>:p:h')
         let s:script_dir = b:curdir . "/python/"
-	python sys.argv = ["--highlight"]
-        execute "pyfile " . s:script_dir. "todo.py --highlight"
+        execute "pyfile " . s:script_dir. "todo.py"
     elseif has('python3')
         let b:curdir = expand('<sfile>:p:h')
         let s:script_dir = b:curdir . "/python/"
-	python3 sys.argv = ["--highlight"]
         execute "py3file " . s:script_dir. "todo.py"
     else
         echom "Your version of vim has no python support. Overdue dates won't be highlighted"

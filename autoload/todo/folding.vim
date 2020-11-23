@@ -1,41 +1,24 @@
-let b:current_context = ""
-let b:current_project = ""
-let b:current_due_date = ""
-let b:curdir = expand('<sfile>:p:h')
-let s:script_dir = b:curdir . "/../../syntax/python/"
+let b:focus_contexts = {"all": 1, "tags": []}
+let b:focus_projects = {"all": 1, "tags": []}
+let b:focus_due_date = 0
 
-function! todo#folding#escape_prefix(str, prefix)
-    " Negative lookbehind to check if already escaped
-    let l:neg_lookbehind = "\\(\\\\\\)\\@<!"
-    return substitute(a:str, l:neg_lookbehind . a:prefix, "\\\\" . a:prefix, "g")
-endfunction
-
-function! todo#folding#set_focus_context(context)
-    let b:current_context = todo#folding#escape_prefix(a:context, "@")
+function! todo#folding#set_focus_context(all, contexts)
+    let b:focus_contexts = {"all": a:all, "tags": a:contexts}
     execute "normal! zxzM"
 endfunction
 
-function! todo#folding#set_focus_project(project)
-    let b:current_project = todo#folding#escape_prefix(a:project, "+")
+function! todo#folding#set_focus_project(all, projects)
+    let b:focus_projects = {"all": a:all, "tags": a:projects}
     execute "normal! zxzM"
 endfunction
 
-function! todo#folding#set_focus_due_date(due_date)
-    let b:current_due_date = a:due_date
+function! todo#folding#set_focus_due_date(focus)
+    let b:focus_due_date = a:focus
     execute "normal! zxzM"
 endfunction
 
 function! todo#folding#toggle_focus_due_date()
-    if len(b:current_due_date) > 0
-        echo "Unfocus due date"
-        call todo#folding#set_focus_due_date("")
-        return
-    endif
-    " TODO Add check for load python etc
-    " TODO python needed? Can also just compare with the date?
-    python3 sys.argv = ["--focus"]
-    execute "py3file " . s:script_dir. "todo.py"
-    execute "normal! zxzM"
+    call todo#folding#set_focus_due_date(!b:focus_due_date)
 endfunction
 
 function! todo#folding#focus_query_tag()
@@ -58,23 +41,48 @@ function! todo#folding#focus_query_tag()
     endif
     if l:answer < len(l:contexts)
         let l:tag = l:contexts[l:answer-1]
-        call todo#folding#set_focus_context(l:tag)
+        call todo#folding#set_focus_context(1, [l:tag])
     else
         let l:tag = l:projects[l:answer-len(l:contexts)-1]
-        call todo#folding#set_focus_project(l:tag)
+        call todo#folding#set_focus_project(1, [l:tag])
     endif
-endfunction
-
-function! todo#folding#get_focus_regex()
-    return "\\v^[^xX]" . todo#folding#regex_all([b:current_project, b:current_context, b:current_due_date]) . "$"
 endfunction
 
 " Get the folding level of a line based on the current focused project and
 " context
 function! todo#folding#foldlevel(lnum)
-    " TODO instead of building one big regex, we could also make use of
-    " if-statements here?
-    return 0 - match(getline(a:lnum),todo#folding#get_focus_regex())
+    let l:foldlevel = 0
+    " Completed
+    if match(getline(a:lnum), "^[xX]\\ ") == 0
+        return 1
+    endif
+    " Due date
+    if b:focus_due_date
+        if ! todo#date#is_todo_overdue(a:lnum)
+            return 1
+        endif
+    endif
+    " Focused contexts and projects
+    for focus in [b:focus_contexts, b:focus_projects]
+        if ! focus.all && len(focus.tags) > 0
+            let l:foldlevel = 1
+        endif
+        for tag in focus.tags
+            if focus.all
+                if match(getline(a:lnum), tag) == -1
+                    return 1
+                endif
+            else
+                if match(getline(a:lnum), tag) != -1
+                    let l:foldlevel = 0
+                    break
+                endif
+            endif
+        endfor
+        if l:foldlevel == 1
+            return 1
+        endif
+    endfor
 endfunction
 
 " Toggle focus to current project under line
@@ -90,18 +98,18 @@ endfunction
 " Toggle focus on project or context at current line
 function! todo#folding#toggle_focus_tag(tag_type)
     if a:tag_type ==# "project"
-        let l:current_tag = b:current_project
+        let l:focus_tags = b:focus_projects
         let l:SetFocusTag = function("todo#folding#set_focus_project")
     elseif a:tag_type ==# "context"
-        let l:current_tag = b:current_context
+        let l:focus_tags = b:focus_contexts
         let l:SetFocusTag = function("todo#folding#set_focus_context")
     else
         echoerr "Unknown tag type: " . a:tag_type
         return
     endif
-    if len(l:current_tag) > 0
+    if len(l:focus_tags.tags) > 0
         echo "Unfocus " . a:tag_type
-        call l:SetFocusTag("")
+        call l:SetFocusTag(1, [])
         return
     endif
     let l:tags = todo#tags#get_current_tags(a:tag_type)
@@ -122,42 +130,15 @@ function! todo#folding#toggle_focus_tag(tag_type)
             return -1
         endif
         if l:answer == 1
-            let l:tag = todo#folding#regex_all(l:tags)
+            let l:all = 1
         elseif l:answer == 2
-            let l:tag = todo#folding#regex_any(l:tags)
+            let l:all = 0
         else
-            let l:tag = l:tags[l:answer-3]
+            let l:tags = [l:tags[l:answer-3]]
+            let l:all = 1
         endif
     else
-        let l:tag = l:tags[0]
+        let l:all = 1
     endif
-    call l:SetFocusTag(l:tag)
-endfunction
-
-" Returns a regex pattern matching if all the patterns in the list matches, in
-" some order
-" NOTE assuming very magic
-function! todo#folding#regex_all(patterns)
-    let l:regex_all = ""
-    for pattern in a:patterns
-        let l:regex_all = l:regex_all . "(.*" . pattern . ")@="
-    endfor
-    let l:regex_all = l:regex_all . ".*"
-    return l:regex_all
-endfunction
-
-" Returns a regex pattern matching any of the pattern in a list
-" NOTE assuming very magic
-function! todo#folding#regex_any(patterns)
-    let l:regex_any = ".*("
-    let l:index = 0
-    for pattern in a:patterns
-        let l:regex_any = l:regex_any . pattern
-        if l:index < len(a:patterns) - 1
-            let l:regex_any = l:regex_any . "|"
-        endif
-        let l:index += 1
-    endfor
-    let l:regex_any = l:regex_any . ").*"
-    return l:regex_any
+    call l:SetFocusTag(l:all, l:tags)
 endfunction

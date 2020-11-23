@@ -16,7 +16,7 @@ if os.path.isdir(dateregex_dir):
     sys.path.insert(0, dateregex_dir)
 
 
-def handle_due_date(highlight, focus):
+def handle_due_date():
     try:
         from dateregex import regex_date_before
     except ImportError:
@@ -25,19 +25,9 @@ def handle_due_date(highlight, focus):
 
     regex = regex_date_before(date.today())
     regex = r'(^|<)due:%s(>|$)' % regex
-    # regex = r'due:%s' % regex
 
-    if focus:
-        vim.command("let s:current_due_date = '%s'" % regex)
-    if highlight:
-        vim.command("syntax match OverDueDate '\\v%s'" % regex)
-        vim.command("highlight  default  link  OverDueDate       Error")
+    vim.command("syntax match OverDueDate '\\v%s'" % regex)
+    vim.command("highlight  default  link  OverDueDate       Error")
 
 
-highlight = False
-focus = False
-if "--highlight" in sys.argv:
-    highlight = True
-if "--focus" in sys.argv:
-    focus = True
-handle_due_date(highlight, focus)
+handle_due_date()
