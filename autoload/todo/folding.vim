@@ -17,6 +17,26 @@ function! todo#folding#set_focus_due_date(focus)
     execute "normal! zxzM"
 endfunction
 
+function! todo#folding#get_current_focus_str()
+    return s:get_current_tags_str('c', b:focus_contexts) . " " . s:get_current_tags_str('p', b:focus_projects)
+endfunction
+
+function! s:get_current_tags_str(type, focus)
+    if len(a:focus.tags) == 0
+        return ""
+    elseif len(a:focus.tags) == 1
+        let l:str = a:focus.tags[0]
+    else
+        if a:focus.all
+            let l:str = "all("
+        else
+            let l:str = "any("
+        endif
+        let l:str = l:str . join(a:focus.tags, ',') . ')'
+    endif
+    return a:type . ':' . l:str
+endfunction
+
 function! todo#folding#toggle_focus_due_date()
     call todo#folding#set_focus_due_date(!b:focus_due_date)
 endfunction
