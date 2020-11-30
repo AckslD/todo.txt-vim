@@ -1,6 +1,3 @@
-let b:focus_contexts = {"all": 1, "tags": []}
-let b:focus_projects = {"all": 1, "tags": []}
-let b:focus_due_date = 0
 
 function! todo#folding#set_focus_context(all, contexts)
     let b:focus_contexts = {"all": a:all, "tags": a:contexts}
@@ -17,7 +14,20 @@ function! todo#folding#set_focus_due_date(focus)
     execute "normal! zxzM"
 endfunction
 
+function! todo#folding#init_buffer()
+    if ! exists("b:focus_contexts")
+        let b:focus_contexts = {"all": 1, "tags": []}
+    endif
+    if ! exists("b:focus_projects")
+        let b:focus_projects = {"all": 1, "tags": []}
+    endif
+    if ! exists("b:focus_due_date")
+        let b:focus_due_date = 0
+    endif
+endfunction
+
 function! todo#folding#get_current_focus_str()
+    call todo#folding#init_buffer()
     return s:get_current_tags_str('c', b:focus_contexts) . " " . s:get_current_tags_str('p', b:focus_projects)
 endfunction
 
@@ -38,6 +48,7 @@ function! s:get_current_tags_str(type, focus)
 endfunction
 
 function! todo#folding#toggle_focus_due_date()
+    call todo#folding#init_buffer()
     call todo#folding#set_focus_due_date(!b:focus_due_date)
 endfunction
 
@@ -71,6 +82,7 @@ endfunction
 " Get the folding level of a line based on the current focused project and
 " context
 function! todo#folding#foldlevel(lnum)
+    call todo#folding#init_buffer()
     let l:foldlevel = 0
     " Completed
     if match(getline(a:lnum), "^[xX]\\ ") == 0
@@ -117,6 +129,7 @@ endfunction
 
 " Toggle focus on project or context at current line
 function! todo#folding#toggle_focus_tag(tag_type)
+    call todo#folding#init_buffer()
     if a:tag_type ==# "project"
         let l:focus_tags = b:focus_projects
         let l:SetFocusTag = function("todo#folding#set_focus_project")
