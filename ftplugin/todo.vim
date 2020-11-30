@@ -61,14 +61,17 @@ nnoremap <script> <silent> <buffer> <localleader>X :call todo#txt#mark_all_as_do
 " Remove completed {{{2
 nnoremap <script> <silent> <buffer> <localleader>D :call todo#txt#remove_completed()<CR>
 
-" Go to note {{{2
-nnoremap <script> <silent> <buffer> <localleader>n :call todo#note#open()<CR>
+" Notes {{{2
+nnoremap <script> <silent> <buffer> <localleader>no :call todo#note#open()<CR>
+nnoremap <script> <silent> <buffer> <localleader>nd :call todo#note#pop()<CR>
 
-" Go to subtasks {{{2
-nnoremap <script> <silent> <buffer> <localleader>t :call todo#subtasks#open()<CR>
+" Subtasks {{{2
+nnoremap <script> <silent> <buffer> <localleader>to :call todo#subtasks#open()<CR>
+nnoremap <script> <silent> <buffer> <localleader>td :call todo#subtasks#pop()<CR>
 
-" Open link {{{2
-nnoremap <script> <silent> <buffer> <localleader>l :call todo#links#open()<CR>
+" Links {{{2
+nnoremap <script> <silent> <buffer> <localleader>lo :call todo#link#open()<CR>
+nnoremap <script> <silent> <buffer> <localleader>ld :call todo#link#pop()<CR>
 
 " Key values {{{2
 nnoremap <script> <silent> <buffer> <localleader>vd :call todo#todokeys#pop("")<CR>
