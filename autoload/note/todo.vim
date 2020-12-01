@@ -1,4 +1,4 @@
-let s:todo_paths = ["~/.todo/todo.txt", "~/.todo/subtasks/"]
+let s:todo_paths = ["~/todo/todo.txt", "~/todo/subtasks/"]
 
 " Add the current note to a todo
 function! note#todo#add_to_todo()

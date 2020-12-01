@@ -1,5 +1,6 @@
 function! todo#note#open()
-    call todo#files#open("note", "~/.notes/", ".md")
+    " TODO dir from environment variable
+    call todo#files#open("note", "~/todo/notes/", ".md")
 endfunction
 
 function! todo#note#set(filepath)

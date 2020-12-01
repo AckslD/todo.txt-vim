@@ -18,7 +18,7 @@ setlocal wrapmargin=0
 
 " Settings {{{1
 if ! exists("g:todo_root_folder")
-    let g:todo_root_folder = "~/.todo"
+    let g:todo_root_folder = "~/todo"
 endif
 
 " Mappings {{{1

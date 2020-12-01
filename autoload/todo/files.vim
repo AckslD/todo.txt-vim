@@ -51,7 +51,8 @@ endfunction
 
 function! todo#files#choose_existing(key, defaultDir)
     call fzf#run({
-        \ 'source': 'find ~/.notes -type f -name "[!.]*"',
+        " TODO dir from environment variable
+        \ 'source': 'find ~/./todo/notes -type f -name "[!.]*"',
         \ 'sink': function('todo#files#handle_open', [a:key]),
         \})
 endfunction
