@@ -1,3 +1,6 @@
+let b:curdir = expand('<sfile>:p:h')
+let s:script_dir = b:curdir . "/python/"
+
 " Checks if current todo under cursor is overdue
 function! todo#date#is_current_overdue()
     let l:due_date = todo#date#get_due_date()
@@ -26,4 +29,19 @@ endfunction
 " Returns due date (as string) of the current todo under cursor (-1 if none)
 function! todo#date#get_due_date()
     return todo#todokeys#get("due")
+endfunction
+
+function! todo#date#pick_date()
+    let l:listdates_script = s:script_dir . "listdates.py"
+    echom 'python ' . l:listdates_script
+    call fzf#run({
+        \ 'source': 'python ' . l:listdates_script,
+        \ 'sink': function('todo#date#set_date'),
+        \})
+endfunction
+
+function! todo#date#set_date(date)
+    let l:convdate_script = s:script_dir . "convdate.py"
+    let l:absdate = substitute(system("python " . l:convdate_script . " " . a:date), '\n\+$', '', '')
+    call todo#todokeys#set("due", l:absdate)
 endfunction

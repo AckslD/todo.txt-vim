@@ -39,9 +39,15 @@ function! todo#txt#replace_date()
 endfunction
 
 function! todo#txt#mark_as_done()
+    " Save the current position
+    let l:curPos = getcurpos()
+
     call s:remove_priority()
     call todo#txt#prepend_date()
     execute 'normal! Ix '
+
+    " Go back to original position
+    call cursor(l:curPos[1], l:curPos[2])
 endfunction
 
 function! todo#txt#mark_all_as_done()

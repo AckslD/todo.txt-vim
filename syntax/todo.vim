@@ -47,8 +47,8 @@ syntax  match  TodoLink       '\(\s\+\)\@<=\(link\|note\|subtasks\):[A-Za-z0-9_~
 
 " Other priority colours might be defined by the user
 highlight  default  link  TodoDone       Comment
-highlight  default  link  TodoPriorityA  Constant
-highlight  default  link  TodoPriorityB  Statement
+highlight  default  link  TodoPriorityA  Statement
+highlight  default  link  TodoPriorityB  Constant
 highlight  default  link  TodoPriorityC  Identifier
 highlight  default  link  TodoDate       PreProc
 highlight  default  link  TodoProject    Special
