@@ -43,7 +43,7 @@ syntax  match  TodoContext    '\(^\|\W\)@[^[:blank:]]\+'  contains=NONE
 " syntax  match  TodoLink       '\(\s\+\)\@<=note:[A-Za-z0-9_~\/\.-]\+' contains=None
 " syntax  match  TodoLink       '\(\s\+\)\@<=subtasks:[A-Za-z0-9_~\/\.-]\+' contains=None
 " syntax  match  TodoLink       '\(\s\+\)\@<=link:[A-Za-z0-9_~\/\.-]\+' contains=None
-syntax  match  TodoLink       '\(\s\+\)\@<=\(link\|note\|subtasks\):[A-Za-z0-9_~\/\.-:-]\+' contains=None
+syntax  match  TodoLink       '\(\s\+\)\@<=\(link\|note\|subtasks\):[A-Za-z0-9_~\/\.-:-#]\+' contains=None
 
 " Other priority colours might be defined by the user
 highlight  default  link  TodoDone       Comment
