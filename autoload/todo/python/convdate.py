@@ -5,7 +5,7 @@ NOW = datetime.now()
 
 weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
-date_str = sys.argv[1]
+date_str = ' '.join(sys.argv[1:])
 if date_str == "Next week":
     date_str = "Monday"
 if date_str == "Today":

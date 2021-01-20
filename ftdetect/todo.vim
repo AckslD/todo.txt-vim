@@ -11,6 +11,3 @@ autocmd BufNewFile,BufRead [Dd]one.txt set filetype=todo
 autocmd BufNewFile,BufRead *.[Dd]one.txt set filetype=todo
 autocmd BufNewFile,BufRead [Aa]rchive.txt set filetype=todo
 autocmd BufNewFile,BufRead *.[Aa]rchive.txt set filetype=todo
-" Subtasks
-" TODO subtasks should also be *todo.txt
-autocmd BufNewFile,BufRead */todo/subtasks/**/*.txt set filetype=todo
