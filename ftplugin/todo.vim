@@ -85,6 +85,10 @@ nnoremap <script> <silent> <buffer> <localleader>P :call todo#tasks#insert_new("
 inoremap <script> <silent> <buffer> <m-o> <esc>:call todo#tasks#insert_new("i", 0, 0)<CR>
 inoremap <script> <silent> <buffer> <m-p> <esc>:call todo#tasks#insert_new("i", 0, 1)<CR>
 
+" Backlog {{{2
+nnoremap <script> <silent> <buffer> <localleader>m :call todo#txt#toggle_backlog('n')<CR>
+vnoremap <script> <silent> <buffer> <localleader>m :call todo#txt#toggle_backlog(visualmode())<CR>
+
 " Folding {{{2
 nnoremap <script> <silent> <buffer> <localleader>zp :call todo#folding#toggle_focus_project()<CR>
 nnoremap <script> <silent> <buffer> <localleader>zc :call todo#folding#toggle_focus_context()<CR>

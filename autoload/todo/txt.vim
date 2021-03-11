@@ -57,7 +57,7 @@ endfunction
 function! s:append_to_file(file, lines)
     let l:lines = []
 
-    " Place existing tasks in archive.txt at the beggining of the list.
+    " Place existing tasks in file at the beginning of the list.
     if filereadable(a:file)
         call extend(l:lines, readfile(a:file))
     endif
@@ -76,13 +76,60 @@ function! todo#txt#remove_completed()
     let l:todo_file = expand('%:p')
     let l:done_file = substitute(substitute(l:todo_file, 'todo.txt$', 'archive.txt', ''), 'Todo.txt$', 'Done.txt', '')
     if !filewritable(l:done_file) && !filewritable(l:target_dir)
-        echoerr "Can't write to file 'archive.txt'"
+        echoerr "Can't write to file '" . l:done_file . "'"
         return
     endif
 
     let l:completed = []
     :g/^x /call add(l:completed, getline(line(".")))|d
     call s:append_to_file(l:done_file, l:completed)
+endfunction
+
+function! s:move_tasks_to_file(type, target_file)
+    if !filewritable(a:target_file)
+        echoerr "Can't write to file '" . a:target_file . "'"
+        return
+    endif
+    let l:tasks = []
+    if a:type==# 'i' || a:type ==# 'n'
+        call add(l:tasks, getline(line(".")))
+        if a:type ==# 'i'
+            execute "normal! \<esc>"
+        endif
+        normal! dd
+    elseif a:type ==# 'V'
+        normal! y
+        call extend(l:tasks, split(@"))
+    else
+        echom "Move tasks not supported in mode type " . a:type
+        return
+    endif
+
+    call s:append_to_file(a:target_file, l:tasks)
+endfunction
+
+function! todo#txt#move_to_backlog(type)
+    " TODO check we are in main todo?
+    let l:target_dir = expand('%:p:h')
+    let l:backlog_file = l:target_dir . "/backlog.txt"
+    call s:move_tasks_to_file(a:type, l:backlog_file)
+endfunction
+
+function! todo#txt#move_to_main_todo(type)
+    " TODO dir from environment variable
+    let l:todo_file = expand("~/todo/todo.txt")
+    call s:move_tasks_to_file(a:type, l:todo_file)
+endfunction
+
+function! todo#txt#toggle_backlog(type)
+    let l:current = expand('%:t')
+    if l:current ==# "todo.txt"
+        call todo#txt#move_to_backlog(a:type)
+    elseif l:current ==# "backlog.txt"
+        call todo#txt#move_to_main_todo(a:type)
+    else
+        echom "Toggling backlog from file " . l:current . "not supported"
+    endif
 endfunction
 
 function! todo#txt#sort_by_context() range
