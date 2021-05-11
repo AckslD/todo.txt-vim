@@ -15,11 +15,20 @@ function! todo#folding#set_focus_due_date(focus)
 endfunction
 
 function! todo#folding#init_buffer()
+    let l:initial_contexts = []
+    if exists("g:todo_focus_initial_contexts")
+        l:initial_contexts = g:todo_focus_initial_contexts
+    endif
     if ! exists("b:focus_contexts")
-        let b:focus_contexts = {"all": 1, "tags": []}
+        let b:focus_contexts = {"all": 1, "contexts": l:initial_contexts}
+    endif
+
+    let l:initial_projects = []
+    if exists("g:todo_focus_initial_projects")
+        l:initial_projects = g:todo_focus_initial_projects
     endif
     if ! exists("b:focus_projects")
-        let b:focus_projects = {"all": 1, "tags": []}
+        let b:focus_projects = {"all": 1, "tags": l:initial_projects}
     endif
     if ! exists("b:focus_due_date")
         let b:focus_due_date = 0
