@@ -117,7 +117,7 @@ endfunction
 
 function! todo#txt#move_to_main_todo(type)
     " TODO dir from environment variable
-    let l:todo_file = expand("~/todo/todo.txt")
+    let l:todo_file = expand(g:todo_root_folder . "/todo.txt")
     call s:move_tasks_to_file(a:type, l:todo_file)
 endfunction
 
